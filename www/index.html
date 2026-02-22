@@ -1,0 +1,655 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>NY State (Empire State) Legislation Search</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg==" crossorigin="anonymous" referrerpolicy="no-referrer" />    <link rel="shortcut icon" type="image/png" href="/static/intro_nyc_logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.11.3/font/bootstrap-icons.min.css" integrity="sha512-dPXYcDub/aeb08c63jRq/k6GaKccl256JQy/AnOq7CAnEZ9FzSL9wSbcZkMp4R26vBsMLFYH4kQ67/bbV8XaCQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@200;400;500&display=swap');
+
+body {
+  font-family: 'Be Vietnam Pro', sans-serif;
+}
+
+:root {
+  --empire-primary: #6f2c7a;
+  --empire-primary-dark: #592163;
+  --empire-primary-soft: #f1e4f4;
+}
+
+.navbar-header {
+  background: var(--empire-primary);
+  color: #fff;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+.navbar-header a {
+  color: inherit;
+}
+.navbar-header h1 a:link {
+  text-decoration: none;
+}
+.navbar-header a:hover, .navbar-header h1 a:hover {
+  text-decoration: underline;
+}
+.navbar-main {
+  width: 100%;
+  text-align: center;
+}
+.navbar-links {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  font-size: .85rem;
+  margin-top: .25rem;
+}
+.navbar-links a {
+  text-decoration: none;
+}
+
+h1 {
+  font-size: 1.2rem;
+  margin-bottom: 0;
+}
+@media (min-width: 992px) {
+  h1 {
+    font-size: 1.75rem;
+  }
+}
+@media (max-width: 575.98px) {
+  h1 {
+    font-size: 1.2rem;
+  }
+  .navbar-links {
+    font-size: .75rem;
+    gap: .75rem;
+  }
+}
+
+
+h3 {
+  font-size: calc(1.3rem + .1vw);
+}
+h4 {
+  font-size: calc(1.15rem + .1vw);
+}
+
+.btn-primary {
+  --bs-btn-bg: var(--empire-primary);
+  --bs-btn-border-color: var(--empire-primary);
+  --bs-btn-hover-bg: var(--empire-primary-dark);
+  --bs-btn-hover-border-color: var(--empire-primary-dark);
+  --bs-btn-active-bg: var(--empire-primary-dark);
+  --bs-btn-active-border-color: var(--empire-primary-dark);
+  --bs-btn-disabled-bg: var(--empire-primary);
+  --bs-btn-disabled-border-color: var(--empire-primary);
+}
+
+.text-primary {
+  color: var(--empire-primary) !important;
+}
+
+.form-check-input:checked {
+  background-color: var(--empire-primary);
+  border-color: var(--empire-primary);
+}
+
+.form-check-input:focus {
+  border-color: var(--empire-primary);
+  box-shadow: 0 0 0 .25rem rgba(111, 44, 122, 0.25);
+}
+
+.file {
+  line-height: 1rem;
+  font-size: .75rem;
+  padding: .25em 0.6em;
+  text-decoration: inherit;
+  /*font-weight: 200;*/
+}
+.legislation-links {
+  display: inline-grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: .35rem;
+  width: 9.5rem;
+  vertical-align: middle;
+  padding-top:2px;
+}
+.legislation-links .file-link {
+  display: block;
+}
+.legislation-links .file {
+  display: block;
+  width: 100%;
+}
+.file-link.empty {
+  visibility: hidden;
+  pointer-events: none;
+}
+a.file-link:link {
+  text-decoration: none;
+}
+.file {
+  /*background-color: #d0d4dd;*/
+  background-color: #e4e6ef;
+  color: var(--empire-primary);
+}
+
+.file:hover{
+  color: #e4e6ef;
+  background-color: var(--empire-primary);
+}
+
+footer {
+  text-align: center;
+  font-size: .75rem;
+  color: #999;
+  padding: 2rem 1rem;
+}
+footer a:link, footer a:visited {
+  color: #777;
+}
+footer p {
+  margin-bottom: .5rem;
+}
+
+</style>
+
+<style>
+
+#search {
+  background-color: #F9F9F7;
+  padding: 1em;
+  border-radius: 1em;
+  max-width: 55rem;
+  margin: 0 auto;
+}
+#search-loading {
+  max-width: 55rem;
+  margin: 0 auto;
+  text-align: center;
+  padding: 1.25rem 0;
+}
+#search-loading .spinner-border {
+  margin-right: .5rem;
+  vertical-align: text-bottom;
+}
+.action-date {
+  font-weight: 200;
+  font-size: .8rem;
+  margin: 0 .4em;
+}
+.action {
+  font-weight: 200;
+  font-size: .9em;
+}
+
+.legislation {
+  margin-bottom: 1.25rem;
+  display:inline-grid;
+  grid-template-columns: 10rem 1fr;
+}
+.legislation .title {
+  font-size: .8rem;
+  color: #333;
+  margin-left: 3rem;
+  /*display: block;*/
+  display: none;
+}
+.legislation .last-update {
+  font-size: .7em;
+  background-color: #fff0c6;
+  padding: .1rem .2rem;
+}
+
+#q {
+  max-width: 100rem;
+}
+#search-results {
+  min-height: 200px;
+  padding: 1em 1em;
+  border-radius: 1em;
+  background-color: #fafafa; 
+  
+}
+.search-term {
+  background-color: #fff0c6;
+}
+.form-check {
+  font-size: .8rem;
+}
+.status-withdrawn > .name {
+  text-decoration: line-through;
+}
+
+</style>
+
+</head>
+<body>
+
+<nav class="navbar navbar-header">
+  <div class="container-fluid">
+    <div class="navbar-main">
+      <h1><a href="https://empire.jehiah.cz/">Empire State Legislation</a></h1>
+      <div class="navbar-links">
+        <a href="https://www.nysenate.gov/legislation"><i class="bi bi-box-arrow-up-right"></i> nysenate.gov</a>
+        <a href="https://nyassembly.gov/leg/"><i class="bi bi-box-arrow-up-right"></i> nyassembly.gov</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+
+<div class="container">
+
+<div class="row">
+<div class="col-sm-12 col-md-8 col-lg-7 mx-auto mt-4">
+
+<div id="search-loading">
+<div class="spinner-border text-primary" role="status" ></div>
+Loading...
+</div>
+
+<div id="search" style="display:none;">
+<form action="/" method="GET" id="searchform">
+  <div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder='ex: "sidewalk" or "emissions"' id="q" name="q">
+    <button class="btn btn-primary" type="submit" id="search-btn">Search</button>
+  </div>
+
+<div class="float-end" id="radio-control">
+  <div class="form-check form-check-reverse">
+    <input class="form-check-input" type="radio" name="bill-type" id="bills" value="bills" checked>
+    <label class="form-check-label" for="bills">
+      Bills
+    </label>
+  </div>
+
+  <div class="form-check form-check-reverse">
+    <input class="form-check-input" type="radio" name="bill-type" id="resolutions" value="resolutions">
+    <label class="form-check-label" for="resolutions">
+      Resolutions
+    </label>
+  </div>  
+</div>
+
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="session" id="session_2025" value="2025">
+  <label class="form-check-label" for="session_2025">
+    2025-2026 Legislative Session
+  </label>
+</div>
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="session" id="session_2023" value="2023">
+  <label class="form-check-label" for="session_2023">
+    2023-2024 Legislative Session 
+  </label>
+</div>
+
+</form>
+
+</div>
+
+</div>
+</div>
+
+<div class="row">
+<div class="col col-lg-10 col-md-12 mx-auto mt-2">
+
+<template id="legislation-template">
+  <div class="legislation">
+    <span class="legislation-links">
+      <a href="" class="file-link file-link-senate empty"><span class="badge file file-senate"></span></a>
+      <a href="" class="file-link file-link-assembly empty"><span class="badge file file-assembly"></span></a>
+    </span>
+    <div class="legislation-info">
+    <span class="name"></span>
+    <span class="badge bg-success status enacted">Enacted</span>
+    <span class="badge bg-danger status vetoed">Vetoed</span>
+    <span class="badge bg-success status adopted">Adopted</span>
+    <br>
+    <!-- <span class="title"></span> -->
+    <span class="last-update"></span>
+    </div>
+  </div>
+</template>
+
+<div id="search-results">
+
+</div>
+
+</div>
+
+</div>
+
+
+
+<div class="row">
+
+<footer>
+<p>Made with ❤️ by <a href="https://jehiah.cz/">@jehiah</a>. Code on <a href="https://github.com/jehiah/empire_legislation/">GitHub</a>. </p>
+<p>Data from <a href="https://legislation.nysenate.gov/">NY Senate Open Legislative Portal</a> via <a href="https://github.com/jehiah/ny_legislation">as archived on GitHub</a></p>
+<p>See also: <a href="https://intro.nyc/">NYC Legislation Search</a></p>
+</footer>
+
+</div>
+
+</div>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FlexSearch/0.8.2/flexsearch.es5.min.js" integrity="sha512-6/HWgrv+vF1Cj3KDN0LLAI4hL4TijgvOhhZUKb6srRsbJOsrFtTyrRAP9J1JthBuZ5Dtp95suOXcrsOasfjZxg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script type="module">
+const currentSession = "2025"
+
+function diffDates(start, end) {
+    // const date1 = new Date(start);
+    // const date2 = new Date(end);
+
+    // One day in milliseconds
+    const oneDay = 1000 * 60 * 60 * 24;
+    const oneHour = 1000 * 60 * 60;
+    const oneMinute = 1000 * 60;
+
+    // Calculating the time difference between two dates
+    const diffInTime = start.getTime() - end.getTime();
+
+    // Calculating the no. of days between two dates
+    const days = Math.round(diffInTime / oneDay);
+    if (days != 0) {
+      return {unit:"day", units:days}
+    }
+    const hours = Math.round(diffInTime / oneHour);
+    if (hours != 0) {
+      return {unit:"hour", units:hours}
+    }
+    const minutes = Math.round(diffInTime / oneMinute);
+    if (minutes != 0) {
+      return {unit:"minute", units:minutes}
+    }
+    return {unit:"second", units: Math.round(diffInTime / 1000) }
+}
+
+function shortDate(d, opt) {
+  return d.toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    timeZone: 'America/New_York'
+  })
+}
+
+
+const rtf = new Intl.RelativeTimeFormat("en", {
+    // localeMatcher: "best fit", // other values: "lookup"
+    numeric: "always", // other values: "auto"
+    style: "long", // other values: "short" or "narrow"
+});
+
+// bootstrap search from URL
+const urlSearchParams = new URLSearchParams(window.location.search)
+document.getElementById("q").value = urlSearchParams.get("q");
+const defaultSession = urlSearchParams.get("session") ? urlSearchParams.get("session") : currentSession;
+document.getElementsByName("session").forEach(e => {e.checked = (e.value == defaultSession)})
+if (urlSearchParams.get("type") === "resolutions") {
+  document.getElementsByName("bill-type").forEach(e => {e.checked = (e.value == urlSearchParams.get("type"))})
+}
+
+
+function newIndex() {
+  return new FlexSearch.Document({
+    charset: "latin:advanced", 
+    tokenize: "forward",
+    document : {
+      id: "PrintNo",
+      index: ["PrintNo", "Title", "Summary", "LawSection", "ActClause"],
+    }
+  });
+}
+var index = {}
+var lookupData = {};
+window.lookupData = lookupData;
+window.index = index;
+// isRecentDate checks if a date is in the last 30 days
+const today = (new Date()).valueOf()
+function isRecentDate(d, cuttoffDays) {
+  const start = today - (cuttoffDays*24*60*60*1000);
+  const ms = d.valueOf()
+  return start <= ms && ms <= today
+}
+function isDate(d) {
+  return d !== "0001-01-01T00:00:00Z"
+}
+function compareDates(a, b) {
+  return (a>b)-(a<b)
+}
+
+
+loadSearchIndex(defaultSession, radioSelectedValue("bill-type")).then(_ => {
+  document.getElementById("search-loading").style.display = 'none';
+  const q = document.getElementById("q");
+  document.getElementById('search').style.display = '';
+
+  q.addEventListener("input", onsearchupdate);
+  document.getElementsByName("session").forEach(d => {
+    d.addEventListener("change", onsearchupdate)
+  })
+  document.getElementsByName("bill-type").forEach(d => {
+    d.addEventListener("change", onsearchupdate)
+  })
+  document.getElementById("searchform").addEventListener("submit", event => {event.preventDefault()})
+  search(q.value, radioSelectedValue("session"), radioSelectedValue("bill-type"));
+})
+
+function radioSelectedValue(field) {
+  const e = document.getElementsByName(field);
+  for (let i = 0; i < e.length; i++) { 
+    if (e[i].checked) {
+      return e[i].value;
+    }
+  }
+}
+
+function onsearchupdate() {
+  var qs = new URLSearchParams()
+  const q = document.getElementById("q");
+  if (q.value.length > 0) {
+    qs.set("q", q.value)
+  }
+
+  const session = radioSelectedValue("session");
+  if (session != currentSession) {
+    qs.set("session", session)
+  }
+
+  const billType = radioSelectedValue("bill-type");
+  if (billType != "bills") {
+    qs.set("type", billType)
+  }
+
+  const l = qs.toString();
+  history.pushState(null, document.title, l.length == 0 ? "/" : "/?" + l)
+
+  if (index[session + billType] == undefined) {
+  // clear previous results before fetch
+  document.querySelector("#search-results").innerHTML = '<div class="spinner-border text-primary" role="status" ></div>';
+  }
+
+  loadSearchIndex(session, billType).then(_ => {
+    search(q.value, session, billType);
+  })
+}
+
+function loadSearchIndex(session, billType) {
+  const key = session + billType
+  if (index[key] == undefined) {
+    let prefix = billType + "_"
+   return fetch(`/data/${prefix}${session}.json`)
+    .then(response => response.json())
+    .then(d => {
+      index[key] = newIndex();
+      d.forEach(dd => {
+        dd.LastModifiedDt = new Date(dd.LastModified)
+        index[key].add(dd);
+        lookupData[dd.PrintNo] = dd
+      })
+    })
+  } else {
+    return Promise.resolve()
+  }
+}
+
+function search(q, session , billType) {
+  const key = session + billType
+  document.querySelector("#search-results").innerHTML = '';
+  var results = index[key].search(q, 75)
+  // console.log("results", results)
+  var seen = {};
+  var resultArray = [];
+  var hasResults = false;
+  results.forEach(r => {
+    r.result.forEach(file => {
+      if (seen[file]) {return}
+      seen[file] = true;
+      hasResults = true;
+      resultArray.push(lookupData[file])
+    })
+  })
+  if (!hasResults) {
+    if (q !== "") {
+      // add "no results"
+      const p = document.createElement("p")
+      p.class = "no-results"
+      p.textContent = "No results"
+      document.querySelector("#search-results").appendChild(p)
+    }
+  } else {
+      const p = document.createElement("p")
+      p.class="search-summary"
+      p.innerHTML =  `${resultArray.length} result${resultArray.length > 1 ? "s"  : ""} for <span class='search-term'></span>`
+      document.querySelector("#search-results").appendChild(p)
+      document.querySelector(".search-term").textContent = "\"" + q +"\""
+
+    resultArray.sort((a, b) => {return a.PrintNo.localeCompare(b.PrintNo)})
+    resultArray.forEach(d => addSearchResult(d, billType))
+  }
+}
+function addSearchResult(row, billType) {
+    // console.log("addResult", row)
+    var target = document.querySelector("#search-results");
+    var template = document.querySelector('#legislation-template');
+    var clone = template.content.cloneNode(true);
+    if (row.Status == "Withdrawn") {
+      clone.querySelectorAll(".legislation")[0].className += " status-withdrawn";
+    }
+    const senateLink = clone.querySelector(".file-link-senate")
+    const assemblyLink = clone.querySelector(".file-link-assembly")
+    const senateBadge = clone.querySelector(".file-senate")
+    const assemblyBadge = clone.querySelector(".file-assembly")
+
+    if (row.Chamber == "SENATE") {
+      senateLink.href = buildURL(row.PrintNo, row.Session, row.Chamber);
+      senateBadge.textContent = row.PrintNo;
+      senateLink.classList.remove("empty")
+    } else {
+      assemblyLink.href = buildURL(row.PrintNo, row.Session, row.Chamber);
+      assemblyBadge.textContent = row.PrintNo;
+      assemblyLink.classList.remove("empty")
+    }
+    
+    if (row.SameAs ) {
+      const sameAsChamber = oppositeChamber(row.Chamber);
+      if (sameAsChamber == "SENATE") {
+        senateLink.href = buildURL(row.SameAs, row.Session, sameAsChamber);
+        senateBadge.textContent = row.SameAs;
+        senateLink.classList.remove("empty")
+      } else {
+        assemblyLink.href = buildURL(row.SameAs, row.Session, sameAsChamber);
+        assemblyBadge.textContent = row.SameAs;
+        assemblyLink.classList.remove("empty")
+      }
+    }
+
+    const shortSummary = (row.Summary || "").slice(0,200)
+    clone.querySelectorAll(".name")[0].textContent=row.Title || shortSummary;
+    // clone.querySelectorAll(".title")[0].textContent=;
+    var enacted = false;
+    var vetoed = false;
+    var adopted = false;
+    var passed = false;
+    if (row.Status == "DELIVERED_TO_GOV" || row.Status == "SIGNED_BY_GOV") {
+      enacted = true;
+    }
+    if (row.Status == "VETOED") {
+      vetoed = true;
+    }
+    if (billType == "resolutions" && row.Status == "ADOPTED") {
+      adopted = true;
+    }
+    const enactedEl = clone.querySelector(".status.enacted")
+    enactedEl.style.display = enacted ? "" : "none";
+    if (row.Status == "DELIVERED_TO_GOV") {
+      enactedEl.textContent = "Delivered to Governor";
+    }
+    clone.querySelectorAll(".status.vetoed").forEach(e => e.style.display = vetoed ? "" : "none");
+    clone.querySelectorAll(".status.adopted").forEach(e => e.style.display = adopted ? "" : "none");
+
+    if (isRecentDate(row.LastModifiedDt, 14)) {
+      const diff = diffDates(row.LastModifiedDt, new Date());
+      // console.log(diff, row.LastModifiedDt)
+      clone.querySelectorAll(".last-update")[0].textContent = "Updated " + rtf.format(diff.units, diff.unit)
+    } else {
+      clone.querySelectorAll(".last-update")[0].remove()
+    }
+
+    target.appendChild(clone);
+}
+function buildURL(printNo, session, chamber) {
+  if (chamber == "SENATE") {
+    return buildSenateURL(printNo, session)
+  } else {
+    return buildAssemblyURL(printNo, session)
+  }
+}
+
+function oppositeChamber(chamber) {
+  if (chamber == "SENATE") {
+    return "ASSEMBLY"
+  }
+  if (chamber == "ASSEMBLY") {
+    return "SENATE"
+  }
+  return chamber
+}
+
+function chamberFromPrintNo(printNo) {
+  const prefix = (printNo || "").trim().charAt(0).toUpperCase();
+  if (prefix == "S") {
+    return "SENATE"
+  }
+  if (prefix == "A") {
+    return "ASSEMBLY"
+  }
+  return null
+}
+
+function buildAssemblyURL(printNo, session) {
+  // https://nyassembly.gov/leg/?bn=A00100&term=2025
+  const q = new URLSearchParams()
+  q.set("term", session)
+  q.set("bn", printNo)
+  return "https://nyassembly.gov/leg/?" + q.toString()
+}
+function buildSenateURL(printNo, session) {
+  // https://www.nysenate.gov/legislation/bills/2025/s100
+  return "https://www.nysenate.gov/legislation/bills/" + session + "/" + printNo
+}
+
+</script>
+  </body>
+</html>
+
