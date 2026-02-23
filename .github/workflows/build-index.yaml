@@ -23,7 +23,7 @@ jobs:
       with:
         go-version: 'stable'
     - name: Build Index
-      run: 'cd empire_legislation/build_index && go build && ./build_index'
+      run: 'cd $GITHUB_WORKSPACE/empire_legislation/build_index && go build && ./build_index'
     - name: Set up Cloud SDK
       uses: 'google-github-actions/auth@v3'
       with:
