@@ -405,7 +405,7 @@ function newIndex() {
     charset: "latin:advanced", 
     tokenize: "forward",
     document : {
-      id: "PrintNo",
+      id: "SearchKey",
       index: ["PrintNo", "Title", "Summary", "LawSection", "ActClause"],
     }
   });
@@ -493,9 +493,10 @@ function loadSearchIndex(session, billType) {
     .then(d => {
       index[key] = newIndex();
       d.forEach(dd => {
+        dd.SearchKey = dd.PrintNo + "-" + dd.Session
         dd.LastModifiedDt = new Date(dd.LastModified)
         index[key].add(dd);
-        lookupData[dd.PrintNo] = dd
+        lookupData[dd.SearchKey] = dd
       })
     })
   } else {
@@ -512,11 +513,11 @@ function search(q, session , billType) {
   var resultArray = [];
   var hasResults = false;
   results.forEach(r => {
-    r.result.forEach(file => {
-      if (seen[file]) {return}
-      seen[file] = true;
+    r.result.forEach(key => {
+      if (seen[key]) {return}
+      seen[key] = true;
       hasResults = true;
-      resultArray.push(lookupData[file])
+      resultArray.push(lookupData[key])
     })
   })
   if (!hasResults) {
