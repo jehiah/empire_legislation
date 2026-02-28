@@ -190,7 +190,7 @@ footer p {
 
 .legislation {
   margin-bottom: 1.25rem;
-  display:inline-grid;
+  display:grid;
   grid-template-columns: 10rem 1fr;
 }
 .legislation .title {
@@ -224,6 +224,23 @@ footer p {
 }
 .status-withdrawn > .name {
   text-decoration: line-through;
+}
+
+/* mobile styles < 768px */
+@media (max-width: 767.98px) {
+  .legislation {
+    grid-template-columns: 5rem 1fr;
+  }
+  .legislation-links {
+    width: 4.5em;
+    grid-template-columns: 1fr;
+    grid-auto-rows: 1.75em;
+    padding-top: 2px;
+  }
+  .legislation-links .empty {
+    display:none;
+  }
+  
 }
 
 </style>
@@ -276,7 +293,6 @@ Loading...
     </label>
   </div>  
 </div>
-
 <div class="form-check">
   <input class="form-check-input" type="radio" name="session" id="session_2025" value="2025">
   <label class="form-check-label" for="session_2025">
@@ -318,24 +334,17 @@ Loading...
   </div>
 </template>
 
-<div id="search-results">
+<div id="search-results" style="display:none;"></div>
 
 </div>
-
 </div>
-
-</div>
-
-
 
 <div class="row">
-
-<footer>
-<p>Made with ❤️ by <a href="https://jehiah.cz/">@jehiah</a>. Code on <a href="https://github.com/jehiah/empire_legislation/">GitHub</a>. </p>
-<p>Data from <a href="https://legislation.nysenate.gov/">NY Senate Open Legislative Portal</a> via <a href="https://github.com/jehiah/ny_legislation">as archived on GitHub</a></p>
-<p>See also: <a href="https://intro.nyc/">NYC Legislation Search</a></p>
-</footer>
-
+  <footer>
+  <p>Made with ❤️ by <a href="https://jehiah.cz/">@jehiah</a>. Code on <a href="https://github.com/jehiah/empire_legislation/">GitHub</a>. </p>
+  <p>Data from <a href="https://legislation.nysenate.gov/">NY Senate Open Legislative Portal</a> via <a href="https://github.com/jehiah/ny_legislation">as archived on GitHub</a></p>
+  <p>See also: <a href="https://intro.nyc/">NYC Legislation Search</a></p>
+  </footer>
 </div>
 
 </div>
@@ -412,8 +421,10 @@ function newIndex() {
 }
 var index = {}
 var lookupData = {};
+
 window.lookupData = lookupData;
 window.index = index;
+
 // isRecentDate checks if a date is in the last 30 days
 const today = (new Date()).valueOf()
 function isRecentDate(d, cuttoffDays) {
@@ -506,7 +517,10 @@ function loadSearchIndex(session, billType) {
 
 function search(q, session , billType) {
   const key = session + billType
-  document.querySelector("#search-results").innerHTML = '';
+  const resultsEl = document.querySelector("#search-results");
+  resultsEl.innerHTML = '';
+  resultsEl.style.display = '';
+
   var results = index[key].search(q, 75)
   // console.log("results", results)
   var seen = {};
@@ -526,13 +540,15 @@ function search(q, session , billType) {
       const p = document.createElement("p")
       p.class = "no-results"
       p.textContent = "No results"
-      document.querySelector("#search-results").appendChild(p)
+      resultsEl.appendChild(p)
+    } else {
+      resultsEl.style.display = 'none';
     }
   } else {
       const p = document.createElement("p")
       p.class="search-summary"
       p.innerHTML =  `${resultArray.length} result${resultArray.length > 1 ? "s"  : ""} for <span class='search-term'></span>`
-      document.querySelector("#search-results").appendChild(p)
+      resultsEl.appendChild(p)
       document.querySelector(".search-term").textContent = "\"" + q +"\""
 
     resultArray.sort((a, b) => {return a.PrintNo.localeCompare(b.PrintNo)})
