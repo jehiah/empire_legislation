@@ -11,15 +11,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout empire_legislation
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         path: empire_legislation
     - name: Checkout ny_legislation
-      uses: actions/checkout@v6
+      uses: actions/checkout@v7
       with:
         repository: jehiah/ny_legislation
         path: ny_legislation
-    - uses: actions/setup-go@v6
+    - uses: actions/setup-go@v7
       with:
         go-version: 'stable'
     - name: Build Index
